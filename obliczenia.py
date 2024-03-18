@@ -33,51 +33,56 @@ def wczytaj_plik(nazwa_pliku):
 def print_hi():
     # Use a breakpoint in the code line below to debug your script.
     print("0 - koniec programu")
-    print("1 - wartosc srednia")
-    print("2 - odchylenie standardowe")
-    print("3 - odchylenie srednie")
-    print("4 - polacz pliki")
-    print("5 - niepewnosc calkowita")
-    #co=input("Co chcesz obliczyc?")
+    print("1 - odchylenie standardowe+srednie")
+    print("2 - rezystancja calkowita")
+    print("3 - niepewnosc obliczen")
+    co=input("Co chcesz obliczyc?")
     #while(co!=0):
-    for co in range(5):
+    for z in range(1):
         suma=0
         ilosc=0
         match co:
             case 1:
+                srednia=0
                 print("wczytywanie wartosci pomiarow...")
                 pomiary=wczytaj_plik("wartosci.txt")
                 for pomiar in pomiary:
-                    suma+=pomiar
+                    srednia+=pomiar
                     ilosc+=1
-                pliksrednia=open("srednia.txt",mode='w')
-                pliksrednia.write(str(suma/ilosc))
-                pliksrednia.close()
-            case 2:
-                wartosci=wczytaj_plik("wartosci.txt")
-                srednia=wczytaj_plik("srednia.txt")
-                for wartosc in wartosci:
-                    ilosc+=1
-                    suma+=(wartosc-srednia[0])*(wartosc-srednia[0])
-                plikodchyl=open("odchyleniestandard.txt", mode='w')
-                plikodchyl.write(str(math.sqrt(suma/ilosc-1)))
-                plikodchyl.close()
-                plikilosc=open("ilosc.txt",mode='w')
-                plikilosc.write(str(ilosc))
-                plikilosc.close()
-            case 3:
-                odchyl=wczytaj_plik("odchyleniestandard.txt")
-                odchylsr=open("odchylsr.txt",mode='w')
-                ilosc=wczytaj_plik("ilosc.txt")
-                odchylsr.write(str(odchyl[0]/math.sqrt(ilosc[0])))
-                odchylsr.close()
-            case 4:
+                srednia/=ilosc
+                for wartosc in pomiary:
+                    suma+=(wartosc-srednia)*(wartosc-srednia)
+                odchyl=math.sqrt(suma/(ilosc-1))
+
+
+                odchylsr=odchyl/math.sqrt(ilosc)
+
                 zapisz=open("dane.txt",mode='w')
-                zapisz.write("srednia = "+str(wczytaj_plik("srednia.txt")))
-                zapisz.write("odchylenie standardowe = "+str(wczytaj_plik("odchyleniestandard.txt")))
-                zapisz.write("odchylenie srednie = "+str(wczytaj_plik("odchylsr.txt")))
+                #zapisz.write("srednia = ")
+                zapisz.write(str(srednia)+"\n")
+                #zapisz.write("odchylenie standardowe = ")
+                zapisz.write(str(odchyl)+"\n")
+                #zapisz.write("odchylenie srednie = ")
+                zapisz.write(str(odchylsr)+"\n")
                 zapisz.close()
+            case 2:
+                dane=wczytaj_plik("dane.txt")
+                rizz=wczytaj_plik("rezystancja.txt")
+                rez=open("rezystancja_calkowita.txt",mode='w')
+                rez.write(str(math.sqrt(dane[1]*dane[1]+rizz[0]*rizz[0]/3+rizz[1]*rizz[1]/3)))
+            case '3':
+                wartosci=wczytaj_plik("wartosci.txt")
+                niepewnosc = open("niepewnosc.txt",mode='w')
+                for wartosc in wartosci:
+                    x=0.01
+                    if(wartosc<2):
+                        x=0.001
+                    if(wartosc<0.2):
+                        x=0.00001
+                    niepewnosc.write(str(wartosc/1000+x)+"\n")
+                niepewnosc.close()
         #co = input("Co chcesz obliczyc?")
+
 
 print_hi()
 
